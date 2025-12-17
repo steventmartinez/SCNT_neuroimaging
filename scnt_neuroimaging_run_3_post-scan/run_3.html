@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>run_3_scnt_neuroimaging_30_8.1.0</title>
+
+    <!-- Load jspsych plugins-->
+    <script src="jspsych_v8/dist/jspsych.js"></script>
+    <script src="jspsych_v8/dist/plugin-preload.js"></script>
+    <script src="jspsych_v8/dist/plugin-fullscreen.js"></script>
+    <script src="jspsych_v8/dist/plugin-instructions.js"></script>
+    <script src="jspsych_v8/dist/plugin-html-slider-response.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-likert.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-multi-choice.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-text.js"></script>
+
+    <!-- Load preload script -->
+    <script src="scripts/run_3_preload_stim.js"></script>
+
+    <!-- Load individual difference scripts -->
+    <script src="scripts/EES.js"></script>
+    <script src="scripts/general_enjoyment.js"></script>
+    <script src="scripts/MTES_shortened_branching.js"></script>
+    <script src="scripts/doomscrolling_scale.js"></script>
+    <script src="scripts/BSMAS.js"></script>
+    <script src="scripts/MAAS.js"></script>
+
+    <!-- Load utils script to export CSV file -->
+    <script src="jspsych_v8/dist/utils.js"></script>
+    
+    <!-- Load jspsych's default CSS styling script (which handles aesthetics) and the jspsychSurvey styling script -->
+    <link href="jspsych_v8/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="jspsych_v8/dist/survey.css" rel="stylesheet" type="text/css" />
+
+    
+<style>
+
+/*jsPsych background color*/
+  body {
+background-color:#FFFFFF;
+}
+
+/*Padding for text*/
+.custom_padding {
+  padding-left: 4vw;
+  padding-right: 4vw;
+}
+
+</style>
+  
+</head>
+<body>
+</body>
+<script>
+
+
+
+//------------------------------------//
+// Establish Date
+//------------------------------------//
+var TODAY = new Date();
+var DD = String(TODAY.getDate()).padStart(2, '0'); // this gets the date 
+var MM = String(TODAY.getMonth() + 1).padStart(2, '0');  // this gets the month  
+var YYYY = TODAY.getFullYear();  // this gets the year
+
+const DATE = MM + DD + YYYY;
+const fulldate = new Date().toLocaleString().replace(',','');
+
+
+
+//------------------------------------//
+// Initialize jsPsych
+//------------------------------------//
+function startExp() {}
+var jsPsych = initJsPsych({
+    on_finish: function() {
+        var csv = jsPsych.data.get().csv();
+        var filename = "PID_" + jsPsych.data.get().values()[0].PID + "_run3_" + DATE + ".csv";
+        downloadCSV(csv, filename);
+        jsPsych.data.displayData()
+    }
+})
+
+
+
+
+//------------------------------------//
+// Initialize jsPsych Timeline
+//------------------------------------//
+var timeline = [];
+
+
+
+
+//------------------------------------//
+// TAG STUDY DATA
+//------------------------------------//
+jsPsych.data.addProperties({
+  script_name: "run_3_scnt_neuroimaging_30",
+});
+
+
+
+
+//------------------------------------//
+// FULL SCREEN
+//------------------------------------//
+timeline.push({
+    data: {
+        trial_id: "full_screen"
+    },
+    type: jsPsychFullscreen,
+    fullscreen_mode: true
+});
+
+
+
+
+//------------------------------------//
+// PRELOAD STIMULI
+//------------------------------------//
+timeline.push(preload_mtes_images)
+
+
+
+
+//------------------------------------//
+// Enter PID
+//------------------------------------//
+var enter_pid = {
+  data: {
+      startdate: fulldate,
+      trial_id: "enter_pid"
+  },
+  type: jsPsychSurveyText,
+  questions: [
+  {prompt: "<p><div style ='font-size:3.5vw; margin-bottom: 5vh;'>Enter participant ID</div></p>", name: 'PID', required: true},
+  {prompt: "<p><div style ='font-size:3.5vw; margin-top: 10vh; margin-bottom: 5vh;'>Enter Run #</div></p>", placeholder: 'This is Run 3', name: 'run_number', required: true}
+  ],
+  // trial_duration: 0,
+  css_classes: ['custom_padding'],
+  on_finish: function(data) {
+
+  var response = data.response;
+  jsPsych.data.addProperties({
+      PID: response.PID, 
+      run_number: response.run_number,
+  })
+}
+}
+
+ 
+
+
+
+
+//------------------------------------//
+// Transition into Surveys
+//------------------------------------//
+var transition_surveys = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#FFFFFF'
+  },
+  data: {
+      trial_id: "transition_surveys"
+  },
+  type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style='line-height: 1.25; font-size: 2.5vw; margin-bottom: 4vh;'>Next, we will ask you to complete a few questionnaires and then the experiment will be complete.</div></p>" +
+    "<p><div style ='line-height: 1.25; font-size:2.5vw; margin-bottom: 3vh;'>Press <b>Next</b> when you are ready to begin the questionnaires.</div></p>"
+     return [pageOne]
+  },
+  show_clickable_nav: true,
+  css_classes: ['custom_padding']
+}
+
+
+
+
+
+//------------------------------------//
+// Organize intro procedure
+//------------------------------------//
+var intro_procedure = {
+    timeline: [enter_pid, transition_surveys],
+}
+
+
+
+
+
+//------------------------------------//
+// CONCATENATE TIMELINES
+//------------------------------------//
+timeline = timeline.concat(intro_procedure); // Intro procedure
+timeline = timeline.concat(EES_procedure); // Explore-Exploit Scale
+timeline = timeline.concat(MTES_survey); // MTES
+timeline = timeline.concat(doomscrolling_scale_procedure); // Doomscrolling scale
+timeline = timeline.concat(bsmas_scale_procedure); // BSMAS
+timeline = timeline.concat(maas_scale_procedure); // MAAS
+
+
+
+
+
+//------------------------------------//
+// Exit experiment
+//------------------------------------//
+var exit_exp = {
+  data: {
+      trial_id: "exit_exp"
+  },
+  type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style='line-height: 1.25; font-size: 2.5vw; margin-bottom: 4vh;'>The experiment is complete!</div></p>" +
+    "<p><div style='line-height: 1.25; font-size: 2.5vw; margin-bottom: 4vh;'>Press <b>Next</b> to exit the experiment.</div></p>"
+     return [pageOne]
+  },
+  show_clickable_nav: true,
+  css_classes: ['custom_padding'],
+}
+
+
+timeline.push(exit_exp)
+
+
+
+//------------------------------------//
+// Run the experiment
+//------------------------------------//
+  jsPsych.run(timeline);
+
+  </script>
+</html>
+
