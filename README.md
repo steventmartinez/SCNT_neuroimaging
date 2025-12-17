@@ -1,5 +1,5 @@
 # SCNT_neuroimaging
-Scripts for the scrolling neuroimaging experiment
+These are all the scripts for the scrolling neuroimaging experiment, including the pre-scan, in-scan, and post-scan protocols.
 
 The **scnt_neuroimaging_run_1_pre-scan** folder includes all the materials for the **pre-scan protocol**.
 
