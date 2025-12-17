@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>run_1_scnt_neuroimaging_30_8.1.0</title>
+
+    <!-- Load jspsych plugins-->
+    <script src="jspsych_v8/dist/jspsych.js"></script>
+    <script src="jspsych_v8/dist/plugin-preload.js"></script>
+    <script src="jspsych_v8/dist/plugin-fullscreen.js"></script>
+    <script src="jspsych_v8/dist/plugin-instructions.js"></script>
+    <script src="jspsych_v8/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych_v8/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-text.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-demo.js"></script>
+
+
+    <!-- Load stimuli scripts -->
+    <script src="stimuli/JS stim/tiktok_stim.js"></script>
+
+    <!-- Load task scripts -->
+    <script src="scripts/run_1_stim_randomization_conceptual_novelty.js"></script>
+    <script src="scripts/run_1_scrolling_conceptual_novelty_task.js"></script>
+    <script src="scripts/run_1_preload_stim.js"></script>
+
+    <!-- Load utils script to export CSV file -->
+    <script src="jspsych_v8/dist/utils.js"></script>
+    
+    <!-- Load jspsych's default CSS styling script (which handles aesthetics) and the jspsychSurvey styling script -->
+    <link href="jspsych_v8/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="jspsych_v8/dist/survey.css" rel="stylesheet" type="text/css" />
+
+    
+<style>
+
+/*jsPsych background color*/
+  body {
+background-color:#FFFFFF;
+}
+
+/*Padding for text*/
+.custom_padding {
+  padding-left: 4vw;
+  padding-right: 4vw;
+}
+
+/*Indiviual video container*/
+.video-container {
+  object-fit: cover;
+  width: 35vw;
+  height: 100vh;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+	}
+
+.blur-fade-glow {
+  opacity: 0.3;
+  filter: blur(20px);
+  animation: blurFadeGlow 10.5s ease-out forwards;
+}
+
+@keyframes blurFadeGlow {
+  0% {
+    opacity: 0.3;
+    filter: blur(20px);
+  }
+  71.4% { /* 5s mark */
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 0px transparent);
+  }
+  85.7% { /* ~6s mark */
+    filter: blur(0px) drop-shadow(0 0 20px #00FFFF) drop-shadow(0 0 40px #00FFFF) drop-shadow(0 0 60px #00BFFF);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 0px transparent);
+  }
+}
+
+
+</style>
+  
+</head>
+<body>
+</body>
+<script>
+
+
+//------------------------------------//
+// Establish Date
+//------------------------------------//
+var TODAY = new Date();
+var DD = String(TODAY.getDate()).padStart(2, '0'); // this gets the date 
+var MM = String(TODAY.getMonth() + 1).padStart(2, '0');  // this gets the month  
+var YYYY = TODAY.getFullYear();  // this gets the year
+
+const DATE = MM + DD + YYYY;
+const fulldate = new Date().toLocaleString().replace(',','');
+
+
+
+//------------------------------------//
+// Initialize jsPsych
+//------------------------------------//
+function startExp() {}
+var jsPsych = initJsPsych({
+    on_finish: function() {
+        var csv = jsPsych.data.get().csv();
+        var filename = "PID_" + jsPsych.data.get().values()[0].PID + "_run1_" + DATE + ".csv";
+        downloadCSV(csv, filename);
+        jsPsych.data.displayData()
+    }
+})
+
+
+
+
+//------------------------------------//
+// Initialize jsPsych Timeline
+//------------------------------------//
+var timeline = [];
+
+
+
+
+//------------------------------------//
+// TAG PROLIFIC DATA
+//------------------------------------//
+jsPsych.data.addProperties({
+  script_name: "run_1_scnt_neuroimaging_30",
+});
+
+
+
+
+//------------------------------------//
+// FULL SCREEN
+//------------------------------------//
+timeline.push({
+    data: {
+        trial_id: "full_screen"
+    },
+    type: jsPsychFullscreen,
+    fullscreen_mode: true
+});
+
+
+
+
+//------------------------------------//
+// PRELOAD STIMULI
+//------------------------------------//
+timeline.push(preload_consent_forms)
+timeline.push(preload_aesthetics)
+timeline.push(preload_audio_test)
+timeline.push(preload_first_demo_stim)
+timeline.push(preload_second_demo_run_one_stim)
+timeline.push(preload_second_demo_run_two_stim)
+
+
+
+
+//------------------------------------//
+// Enter PID
+//------------------------------------//
+var enter_pid = {
+  data: {
+      startdate: fulldate,
+      trial_id: "enter_pid"
+  },
+  type: jsPsychSurveyText,
+  questions: [
+  {prompt: "<p><div style ='font-size:3.5vw; margin-bottom: 15vh;'>Welcome to the experiment!</div></p>" +
+  "<p><div style ='font-size:3.5vw; margin-bottom: 5vh;'>Enter participant ID</div></p>", name: 'PID', required: true},
+  {prompt: "<p><div style ='font-size:3.5vw; margin-top: 10vh; margin-bottom: 5vh;'>Enter Run #</div></p>", placeholder: 'This is Run 1', name: 'run_number', required: true}
+  ],
+  css_classes: ['custom_padding'],
+  on_finish: function(data) {
+
+  var response = data.response;
+  jsPsych.data.addProperties({
+      PID: response.PID, 
+      run_number: response.run_number,
+  })
+}
+}
+
+
+
+//------------------------------------//
+// Consent Forms
+//------------------------------------//
+/*Show consent forms -- 1*/
+var consent_forms1 = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "consent_forms1"
+    },
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p><img src="consent_forms/Scrolling_informed_consent_inperson_08.04.2025-part-1.png" style= "height: 80vh; width: 35vw; position:fixed; left: 10vw; top: 4vh;"></img></p>' +
+      '<p><img src="consent_forms/Scrolling_informed_consent_inperson_08.04.2025-part-2.png" style= "height: 80vh; width: 35vw; position:fixed; right: 10vw; top: 4vh;"></img></p>',
+    choices: ["<p style ='font-size: 1.8vw; color: black; position:fixed; left: 47.8vw; bottom: .6vh;'><b>Next</b></p>"],
+    button_html: (choice) => {
+      return `<button class="jspsych-btn" style="width: 7vw; height: 6vh; position: fixed; left: 46vw; bottom: 2vh;">${choice}</button>`
+      },
+    };
+
+
+
+/*Show consent forms -- 2*/
+var consent_forms2 = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "consent_forms2"
+    },
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p><img src="consent_forms/Scrolling_informed_consent_inperson_08.04.2025-part-3.png" style= "height: 80vh; width: 35vw; position:fixed; left: 10vw; top: 4vh;"></img></p>' +
+      '<p><img src="consent_forms/Scrolling_informed_consent_inperson_08.04.2025-part-4.png" style= "height: 80vh; width: 35vw; position:fixed; right: 10vw; top: 4vh;"></img></p>',
+    choices: ["<p style ='font-size: 1.8vw; color: black; position:fixed; left: 47.8vw; bottom: .6vh;'><b>Next</b></p>"],
+    button_html: (choice) => {
+      return `<button class="jspsych-btn" style="width: 7vw; height: 6vh; position: fixed; left: 46vw; bottom: 2vh;">${choice}</button>`
+      },
+    };
+
+
+  
+  
+/*Show consent forms -- 3*/
+var consent_forms3 = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "consent_forms3"
+    },
+    type: jsPsychHtmlButtonResponse,
+    stimulus: '<p><img src="consent_forms/Scrolling_informed_consent_inperson_08.04.2025-part-5.png" style= "height: 80vh; width: 35vw;"></img></p>',
+    choices: ["<p style ='font-size:1.5vw; position: fixed; left: 31.5vw; bottom: 4vh;'><b>Consent to participate</b></p>", "<p style ='font-size: 1.5vw;position: fixed; right: 31.7vw; bottom: 4vh'><b>Decline to participate</b></p>"],
+    button_html: (choice) => {
+        return `<button class="jspsych-btn" style="width: 19vw; height: 8vh; position: relative; bottom: 0.3vh;">${choice}</button>`
+        },
+  on_finish: function(data){
+	if(data.response == 1){
+		jsPsych.abortExperiment('<p>You did not consent to participate. The session will now finish. Thank you for your time!</p>');
+	}
+}
+    };
+
+
+
+//--------------------------------------//
+// Thank you for agreeing to participate
+//--------------------------------------//
+var consent_approval = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "consent_approval"
+    },
+    type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style ='font-size:2.7vw; margin-bottom: 8vh;'>Thank you for agreeing to participate.</div></p>" +
+        "<p><div style ='font-size:2.7vw; margin-bottom: 4vh;'>Please press <b>Next</b> to answer some questions.</div></p>" 
+    return [pageOne]
+    },
+    button_label_next: "Next",
+    show_clickable_nav: true,
+    css_classes: ['custom_padding'],
+    }
+
+ 
+
+//------------------------------------//
+// Demographics
+//------------------------------------//
+var demographics = {
+    data: {
+        trial_id: "demographics"
+    },
+    on_start: function() {
+
+    document.body.style.backgroundColor = '#FFFFFF'
+     },
+    type: jsPsychSurveyDemo,
+on_finish: function (data) {
+
+    for (const key in data.responses) {
+
+      /*Store answer for "age" question*/
+      if (`${key}` == "age") {
+        age_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "education" question*/
+      if (`${key}` == "education") {
+        education_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "ethnicity" question*/
+      if (`${key}` == "ethnicity") {
+        ethnicity_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "gender" question*/
+      if (`${key}` == "gender") {
+        gender_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "race" question*/
+      if (`${key}` == "race") {
+        race_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "sex" question*/
+      if (`${key}` == "sex") {
+        sex_answer = `${data.responses[key]}`
+      }
+
+      /*Store answer for "sex-free-response" question*/
+      if (`${key}` == "sex-free-response") {
+        sex_free_response_answer = `${data.responses[key]}`
+      }
+
+    }
+
+    //Add a column called "age" that stores the answer
+    data.age = age_answer
+
+    //Add a column called "education" that stores the answer
+    data.education = education_answer
+
+    //Add a column called "ethnicity" that stores the answer
+    data.ethnicity = ethnicity_answer
+
+    //Add a column called "gender" that stores the answer
+    data.gender = gender_answer
+
+    //Add a column called "race" that stores the answer
+    data.race = race_answer
+
+    //Add a column called "sex" that stores the answer
+    data.sex = sex_answer
+
+    //Add a column called "sex_free_response" that stores the answer
+    data.sex_free_response = sex_free_response_answer
+  }
+  }
+
+
+
+
+
+
+//------------------------------------//
+// Audio Check Instructions
+//------------------------------------//
+var audio_check_instructions = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "audio_check_instructions"
+    },
+    type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>Before we get started, we want to ensure your volume is set to a comfortable level.</div></p>" +
+    "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>In the next screen, you will hear a short audio sample.</div></p>" +
+    "<p><div style ='font-size:3vw; line-height: 1.5em; margin-bottom: 4vh;'>Please adjust your volume to a comfortable level where you can clearly hear the sound.</div></p>" +
+    "<p><div style ='font-size:3vw; margin-bottom: 4vh;'>Please press <b>Next</b> to hear the audio sample.</div></p>" 
+    return [pageOne]
+    },
+    button_label_next: "Next",
+    show_clickable_nav: true,
+    css_classes: ['custom_padding'],
+    }
+
+
+
+//------------------------------------//
+// Audio Check
+//------------------------------------//
+var audio_check = {
+  on_start: function() {
+        document.body.style.backgroundColor = '#000000'
+  },
+    data: {
+        trial_id: "audio_check"
+    },
+    type: jsPsychHtmlButtonResponse,
+    stimulus: function(){
+                var html = 
+                '<p style="color: white; font-size: 2.7vw; text-align: center; margin-bottom: 20px;">Press <b>Next</b> whenever you have finished adjusting your volume.</p>' +
+                '<video disableRemotePlayback autoplay id="stimulus-video" src="study_design_aesthetics/audio_waveform_veed.mp4" <div style = "margin: 0"></video>' 
+                return html;
+            },  
+    choices: ["<p style ='font-size: 1.8vw; color: black; position:fixed; left: 47.7vw; bottom: 3.3vh;'><b>Next</b></p>"],
+    button_html: (choice) => {
+      return `<button class="jspsych-btn" style="width: 7vw; height: 7vh; position: fixed; left: 46vw; bottom: 4vh;">${choice}</button>`
+      },
+    // button_html: ['<button class="jspsych-btn" style="width: 7vw; height: 7vh; position: fixed; left: 46.4vw; bottom: 4vh;" >%choice%</button>'],
+    on_finish: function() {
+        document.body.style.backgroundColor = '#F0F0F0'
+    }
+    }
+
+
+
+//------------------------------------//
+// Begin experiment
+//------------------------------------//
+var begin_experiment = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
+    data: {
+        trial_id: "begin_experiment"
+    },
+    type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>The experiment will now begin.</div></p>"
+    return [pageOne]
+    },
+    button_label_next: "Next",
+    show_clickable_nav: true,
+    css_classes: ['custom_padding'],
+    }
+
+
+
+
+//------------------------------------//
+// Organize consenting procedure
+//------------------------------------//
+var consenting_procedure = {
+    timeline: [enter_pid, consent_forms1, consent_forms2, consent_forms3, consent_approval, audio_check_instructions, audio_check, begin_experiment],
+}
+
+
+
+
+
+//------------------------------------//
+// CONCATENATE TIMELINES
+//------------------------------------//
+timeline = timeline.concat(consenting_procedure); // Consenting procedure
+timeline = timeline.concat(demo_conceptual_novelty_task); // demo conceptual novelty task
+
+
+
+
+
+//------------------------------------//
+// Run the experiment
+//------------------------------------//
+  jsPsych.run(timeline);
+
+  </script>
+</html>
