@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>run_2_scnt_neuroimaging_30_8.1.0</title>
+
+    <!-- Load jspsych plugins-->
+    <script src="jspsych_v8/dist/jspsych.js"></script>
+    <script src="jspsych_v8/dist/plugin-preload.js"></script>
+    <script src="jspsych_v8/dist/plugin-fullscreen.js"></script>
+    <script src="jspsych_v8/dist/plugin-instructions.js"></script>
+    <script src="jspsych_v8/dist/plugin-html-button-response.js"></script>
+    <script src="jspsych_v8/dist/plugin-html-keyboard-response.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-text.js"></script>
+    <script src="jspsych_v8/dist/plugin-survey-demo.js"></script>
+    <script src="jspsych_v8/dist/plugin-audio-keyboard-response.js"></script>
+
+
+    <!-- Load stimuli and algorithm icon scripts -->
+    <script src="stimuli/JS stim/tiktok_stim.js"></script>
+    <script src="scripts/algorithm_icons.js"></script>
+
+    <!-- Load task scripts -->
+    <script src="scripts/run_2_stim_randomization_conceptual_novelty.js"></script>
+    <script src="scripts/run_2_scrolling_conceptual_novelty_task.js"></script>
+    <script src="scripts/run_2_preload_stim.js"></script>
+
+    <!-- Load utils script to export CSV file -->
+    <script src="jspsych_v8/dist/utils.js"></script>
+    
+    <!-- Load jspsych's default CSS styling script (which handles aesthetics) and the jspsychSurvey styling script -->
+    <link href="jspsych_v8/dist/jspsych.css" rel="stylesheet" type="text/css" />
+    <link href="jspsych_v8/dist/survey.css" rel="stylesheet" type="text/css" />
+
+    
+<style>
+
+/*jsPsych background color*/
+  body {
+background-color:#FFFFFF;
+}
+
+/*Padding for text*/
+.custom_padding {
+  padding-left: 4vw;
+  padding-right: 4vw;
+}
+
+/*Indiviual video container*/
+.video-container {
+  object-fit: cover;
+  width: 35vw;
+  height: 100vh;
+  display: block;
+  margin: 0 auto;
+  border-radius: 10px;
+  overflow: hidden;
+	}
+
+.blur-fade-glow {
+  opacity: 0.3;
+  filter: blur(20px);
+  animation: blurFadeGlow 10.5s ease-out forwards;
+}
+
+@keyframes blurFadeGlow {
+  0% {
+    opacity: 0.3;
+    filter: blur(20px);
+  }
+  71.4% { /* 5s mark */
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 0px transparent);
+  }
+  85.7% { /* ~6s mark */
+    filter: blur(0px) drop-shadow(0 0 20px #00FFFF) drop-shadow(0 0 40px #00FFFF) drop-shadow(0 0 60px #00BFFF);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px) drop-shadow(0 0 0px transparent);
+  }
+}
+
+
+</style>
+  
+</head>
+<body>
+</body>
+<script>
+
+
+//------------------------------------//
+// Create Global Clock for Neuroimaging
+//------------------------------------//
+/* Create a variable to store the global clock */
+let experimentClock = {
+    start_time: null,
+    trial_start_time: null
+};
+
+/* Function to initialize the global clock */
+function initializeGlobalClock() {
+    experimentClock.start_time = performance.now();
+}
+
+/* Function to get experiment start time */
+function getExperimentStartTime() {
+    return experimentClock.start_time;
+}
+
+/* Function to start timing a trial and return onset time */
+function startTrialTiming() {
+    experimentClock.trial_start_time = performance.now();
+    const onset_time = experimentClock.trial_start_time - experimentClock.start_time;
+    return onset_time;
+}
+
+/* Function to calculate the trial duration */
+function getTrialDuration() {
+    const duration = performance.now() - experimentClock.trial_start_time;
+    return duration;
+}
+
+// /*Maybe useful to record when a participant takes a break or experimenter pauses the scan or in a trial with multiple video clips*/ 
+// /* Function to get current time relative to experiment start */
+// function getExperimentTime() {
+//     return performance.now() - experimentClock.start_time;
+// }
+
+
+
+/* Declare global timing variables outside trial objects so that we can store data in the on_start() sections */
+let exp_start_time_milliseconds = null;  // Only set once, never changes
+let exp_start_time_seconds = null;  // Only set once, never changes
+
+let trial_onset_time_milliseconds = null;       // Updated for each trial
+let trial_onset_time_seconds = null;       // Updated for each trial
+
+
+
+//------------------------------------//
+// Establish Date
+//------------------------------------//
+var TODAY = new Date();
+var DD = String(TODAY.getDate()).padStart(2, '0'); // this gets the date 
+var MM = String(TODAY.getMonth() + 1).padStart(2, '0');  // this gets the month  
+var YYYY = TODAY.getFullYear();  // this gets the year
+
+const DATE = MM + DD + YYYY;
+const fulldate = new Date().toLocaleString().replace(',','');
+
+
+
+//------------------------------------//
+// Initialize jsPsych
+//------------------------------------//
+function startExp() {}
+var jsPsych = initJsPsych({
+    on_finish: function() {
+        var csv = jsPsych.data.get().csv();
+        var filename = "PID_" + jsPsych.data.get().values()[0].PID + "_run2_" + DATE + ".csv";
+        downloadCSV(csv, filename);
+        jsPsych.data.displayData()
+    }
+})
+
+
+
+
+//------------------------------------//
+// Initialize jsPsych Timeline
+//------------------------------------//
+var timeline = [];
+
+
+
+
+//------------------------------------//
+// TAG PROLIFIC DATA
+//------------------------------------//
+jsPsych.data.addProperties({
+  script_name: "run_2_scnt_neuroimaging_30",
+});
+
+
+
+
+//------------------------------------//
+// FULL SCREEN
+//------------------------------------//
+timeline.push({
+    data: {
+        trial_id: "full_screen"
+    },
+    type: jsPsychFullscreen,
+    fullscreen_mode: true
+});
+
+
+
+
+//------------------------------------//
+// PRELOAD STIMULI
+//------------------------------------//
+timeline.push(preload_aesthetics)
+timeline.push(preload_algorithm_icons_shuffled)
+timeline.push(preload_algorithm_repeated_wallpaper_shuffled)
+timeline.push(preload_intro_sound)
+
+
+
+//------------------------------------//
+// Enter PID
+//------------------------------------//
+var enter_pid = {
+    on_start: function() {
+
+    document.body.style.backgroundColor = '#F0F0F0'
+  },
+  data: {
+      startdate: fulldate,
+      trial_id: "enter_pid"
+  },
+  type: jsPsychSurveyText,
+  questions: [
+  {prompt: "<p><div style ='font-size:3.5vw; margin-bottom: 15vh;'>Welcome to the experiment!</div></p>" +
+  "<p><div style ='font-size:3.5vw; margin-bottom: 5vh;'>Enter participant ID</div></p>", name: 'PID', required: true},
+  {prompt: "<p><div style ='font-size:3.5vw; margin-top: 10vh; margin-bottom: 5vh;'>Enter Run #</div></p>", placeholder: 'This is Run 2', name: 'run_number', required: true}
+  ],
+  css_classes: ['custom_padding'],
+  on_finish: function(data) {
+
+  var response = data.response;
+  jsPsych.data.addProperties({
+      PID: response.PID, 
+      run_number: response.run_number,
+      exp_start_time_milliseconds: getExperimentStartTime(),
+      exp_start_time_seconds: getExperimentStartTime() / 1000
+  })
+}
+}
+
+ 
+
+
+//------------------------------------//
+// Audio Check
+//------------------------------------//
+var audio_check = {
+    data: {
+        trial_id: "audio_check"
+    },
+    type: jsPsychInstructions,
+    pages: function(){
+    pageOne = "<p><div style ='font-size:3.2vw; line-height: 1.8em'>Let's take a moment to make sure the volume is set to a level where you can comfortably hear.</div></p>"
+    return [pageOne]
+    },
+    button_label_next: "Next",
+    show_clickable_nav: true,
+    css_classes: ['custom_padding'],
+  }
+
+
+//------------------------------------//
+// Organize intro procedure
+//------------------------------------//
+var intro_procedure = {
+    timeline: [enter_pid, audio_check],
+}
+
+
+
+
+
+//------------------------------------//
+// CONCATENATE TIMELINES
+//------------------------------------//
+timeline = timeline.concat(intro_procedure); // Intro procedure
+timeline = timeline.concat(conceptual_novelty_task); // conceptual novelty task
+
+
+
+
+
+//------------------------------------//
+// Run the experiment
+//------------------------------------//
+  jsPsych.run(timeline);
+
+  </script>
+</html>
+
