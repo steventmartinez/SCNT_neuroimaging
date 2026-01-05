@@ -9,7 +9,7 @@ The **scnt_neuroimaging_run_3_post-scan** folder includes all the materials for 
 
 Here is a study design vignette that visualizes the pre-scan, in-scan, and post-scan protocols.
 
-<img src="study_design_figure.png" alt="Study Design" width="1000" height="800">
+<img src="study_design_figure.png" alt="Study Design" width="1100" height="1000">
 
 
 # Recruitment Plan
