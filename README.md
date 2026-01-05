@@ -10,3 +10,9 @@ The **scnt_neuroimaging_run_3_post-scan** folder includes all the materials for 
 Here is a study design vignette that visualizes the pre-scan, in-scan, and post-scan protocols.
 
 <img src="study_design_figure.png" alt="Study Design" width="800" height="600">
+
+
+# Recruitment
+Here is a vignette that maps out what the recruitment plan will look like for the scrolling neuroimaging experiment.
+
+<img src="recruitment_plan.png" alt="Recruitment Plan" width="800" height="600">
