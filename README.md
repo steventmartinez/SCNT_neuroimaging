@@ -4,6 +4,7 @@ These are all the scripts for the scrolling neuroimaging experiment, including t
 The **scnt_neuroimaging_phase_1_pre-scan** folder includes all the materials for the **pre-scan protocol**.
 
 The **scnt_neuroimaging_phase_2_in-scan_run1** folder includes all the materials for the **run 1 in-scan protocol**.
+
 The **scnt_neuroimaging_phase_2_in-scan_run2** folder includes all the materials for the **run 2 in-scan protocol**.
 
 The **scnt_neuroimaging_phase_3_post-scan** folder includes all the materials for the **post-scan protocol**.
