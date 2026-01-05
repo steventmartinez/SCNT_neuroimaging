@@ -15,4 +15,4 @@ Here is a study design vignette that visualizes the pre-scan, in-scan, and post-
 # Recruitment Plan
 Here is a vignette that maps out what the recruitment plan will look like for the scrolling neuroimaging experiment.
 
-<img src="recruitment_plan.png" alt="Recruitment Plan" width="800" height="600">
+<img src="recruitment_plan.png" alt="Recruitment Plan" width="900" height="700">
