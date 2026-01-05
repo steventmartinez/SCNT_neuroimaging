@@ -363,28 +363,62 @@ var loading_screen = {
 
 
 //------------------------------------//
-// Audio Check
+// Audio Check Instructions
 //------------------------------------//
-var audio_check = {
+var audio_check_instructions = {
+  on_start: function() {
+    document.body.style.backgroundColor = '#F0F0F0'
+},
     data: {
-        trial_id: "audio_check"
+        trial_id: "audio_check_instructions"
     },
     type: jsPsychInstructions,
     pages: function(){
-    var pageOne = "<p><div style ='font-size:3.2vw; line-height: 1.8em'>Let's take a moment to make sure the volume is set to a level where you can comfortably hear.</div></p>"
+    pageOne = "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>Before we get started, we want to ensure your volume is set to a comfortable level.</div></p>" +
+    "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>In the next screen, you will hear a short audio sample.</div></p>" +
+    "<p><div style ='font-size:3vw; line-height: 1.5em; margin-bottom: 6vh;'>We will adjust your volume to a comfortable level where you can clearly hear the sound.</div></p>" +
+    "<p><div style ='font-size:3vw; margin-bottom: 4vh;'>Please press <b>Next</b> to hear the audio sample.</div></p>" 
     return [pageOne]
     },
     button_label_next: "Next",
     show_clickable_nav: true,
     css_classes: ['custom_padding'],
-  }
+    }
+
+
+
+//------------------------------------//
+// Audio Check
+//------------------------------------//
+var audio_check = {
+  on_start: function() {
+        document.body.style.backgroundColor = '#000000'
+  },
+    data: {
+        trial_id: "audio_check"
+    },
+    type: jsPsychHtmlButtonResponse,
+    stimulus: function(){
+                var html = 
+                '<video disableRemotePlayback autoplay id="stimulus-video" src="study_design_aesthetics/audio_waveform_veed.mp4" <div style = "margin: 0"></video>' 
+                return html;
+            },  
+    choices: ["<p style ='font-size: 1.8vw; color: black; position:fixed; left: 47.7vw; bottom: 3.3vh;'><b>Next</b></p>"],
+    button_html: (choice) => {
+      return `<button class="jspsych-btn" style="width: 7vw; height: 7vh; position: fixed; left: 46vw; bottom: 4vh;">${choice}</button>`
+      },
+    // button_html: ['<button class="jspsych-btn" style="width: 7vw; height: 7vh; position: fixed; left: 46.4vw; bottom: 4vh;" >%choice%</button>'],
+    on_finish: function() {
+        document.body.style.backgroundColor = '#F0F0F0'
+    }
+    }
 
 
 //------------------------------------//
 // Organize intro procedure
 //------------------------------------//
 var intro_procedure = {
-    timeline: [enter_pid, loading_screen, preload_all_algorithm_icons, preload_run1_practice, preload_batch_one, preload_batch_two, preload_batch_three, audio_check],
+    timeline: [enter_pid, loading_screen, preload_all_algorithm_icons, preload_run1_practice, preload_batch_one, preload_batch_two, preload_batch_three, audio_check_instructions, audio_check],
 }
 
 

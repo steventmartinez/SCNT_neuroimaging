@@ -170,7 +170,7 @@ var enter_pid = {
   },
   type: jsPsychSurveyText,
   questions: [
-  {prompt: "<p><div style ='font-size:3.5vw; margin-bottom: 15vh;'>Welcome to the experiment!</div></p>" +
+  {prompt: "<p><div style ='font-size:3.5vw; margin-bottom: 15vh;'><b>Welcome to the experiment!</b></div></p>" +
   "<p><div style ='font-size:3.5vw; margin-bottom: 5vh;'>Enter participant ID</div></p>", name: 'PID', required: true},
   {prompt: "<p><div style ='font-size:3.5vw; margin-top: 10vh; margin-bottom: 5vh;'>Enter Phase #</div></p>", placeholder: 'This is Phase 1', name: 'phase', required: true}
   ],
@@ -370,7 +370,7 @@ var audio_check_instructions = {
     pages: function(){
     pageOne = "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>Before we get started, we want to ensure your volume is set to a comfortable level.</div></p>" +
     "<p><div style ='font-size:3vw; line-height: 1.8em; margin-bottom: 4vh;'>In the next screen, you will hear a short audio sample.</div></p>" +
-    "<p><div style ='font-size:3vw; line-height: 1.5em; margin-bottom: 4vh;'>Please adjust your volume to a comfortable level where you can clearly hear the sound.</div></p>" +
+    "<p><div style ='font-size:3vw; line-height: 1.5em; margin-bottom: 6vh;'>Please adjust your volume to a comfortable level where you can clearly hear the sound.</div></p>" +
     "<p><div style ='font-size:3vw; margin-bottom: 4vh;'>Please press <b>Next</b> to hear the audio sample.</div></p>" 
     return [pageOne]
     },

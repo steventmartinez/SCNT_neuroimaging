@@ -338,19 +338,23 @@ var preload_batch_three = {
 
 
 
-//------------------------------------//
-// First Fixation Cross
-//------------------------------------//
-var first_fixation_cross = {
-    data: {
-      trial_id: "first_fixation_cross"
-    },
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: '<div style="font-size:160px;">+</div>',
-  choices: "NO_KEYS",
-  trial_duration: 12000,
-};
 
+//------------------------------------//
+// Pause window
+//------------------------------------//
+ var pause_window = {
+  data: {
+    trial_id: "pause_window",
+},
+    type: jsPsychInstructions,
+    pages: function(){
+    let pageOne = 
+    "<p><div style='line-height: 1.55; font-size: 3.2vw; margin-bottom: 5vh;'>Please wait for the session to begin.</div></p>" 
+    return [pageOne];
+  },
+  show_clickable_nav: true,
+  css_classes: ['custom_padding'],
+};
 
 
 
@@ -3375,5 +3379,5 @@ exp_run1 = [run1_feed_1_algorithm_repeated, run1_feed_1_trials, run1_feed_2_algo
 // Organize conceptual Novelty Task -- RUN 1
 //--------------------------------------------//
 var conceptual_novelty_task_run1 = {
-    timeline: [first_fixation_cross, exp_instructions_reminder, in_scan_practice, practice_run, in_scan_practice_complete, launch_platform, video_platform_loading, wait_for_trigger, exp_run1]
+    timeline: [pause_window, exp_instructions_reminder, in_scan_practice, practice_run, in_scan_practice_complete, launch_platform, video_platform_loading, wait_for_trigger, exp_run1]
 };

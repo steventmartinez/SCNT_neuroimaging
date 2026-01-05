@@ -2,6 +2,8 @@ var study_aesthetics = ["study_design_aesthetics/exit_door_person_button_instruc
 
 var intro_sound = ["study_design_aesthetics/intro_sound.mp3"]
 
+var audio_test = ["study_design_aesthetics/audio_waveform_veed.mp4"]
+
 var preload_aesthetics = {
     data: {
         trial_id: 'preload_aesthetics'
@@ -16,4 +18,12 @@ var preload_intro_sound = {
       },
     type: jsPsychPreload,
     audio: intro_sound,
+}
+
+var preload_audio_test = {
+    data: {
+        trial_id: 'preload_audio_test'
+      },
+    type: jsPsychPreload,
+    video: audio_test,
 }
